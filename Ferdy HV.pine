@@ -1,0 +1,23 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Ferdy Sopian
+
+//@version=5
+indicator(title="Hidden Volume", shorttitle="Ferdy Sopian HV")
+
+// true merah false hijau
+checkMerahHijau(position) =>
+	open[position] > close[position]
+
+volumeSebelumnya = checkMerahHijau(1)
+volumeSekarang = checkMerahHijau(0)
+
+isFallingGrowing() =>
+	(volumeSekarang and not(volumeSebelumnya)) and (volume[1] > volume ) and ((high - low) > (high[1] - low[1]))
+	
+isGrowingFalling() =>
+	(not(volumeSekarang) and volumeSebelumnya) and (volume[1] > volume ) and ((high - low) > (high[1] - low[1]))
+
+palette = isFallingGrowing() ? color.new(color.red,70) : na
+palette := isGrowingFalling() ? color.new(color.green,70) : na
+plotshape(isGrowingFalling(), color=color.green, style=shape.arrowup, text="BUY", location=location.belowbar)
+plotshape(isFallingGrowing(), color=color.red, style=shape.arrowdown, text="SELL", location=location.abovebar)
